@@ -40,10 +40,10 @@ sub isError {
 # Установить прокси
 sub setProxy {
 	my ($self, $proxyStr) = @_;
-	
+
 	# Если  был передан
 	if ($proxyStr) {
-		
+
 		#  Выбираем из него ip и port
 		#my ($protocol, $ip, $port) = $proxyStr =~ m#(\w+)://(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d{1,5})#;
 
@@ -52,7 +52,7 @@ sub setProxy {
 		#print "\n\$protocol=$protocol\n\$ip=$ip\n\$port=$port\n";
 
 		if ( defined($protocol) and defined($ip) and defined($port) ) {
-			
+
 			unless ( $protocol eq HTTP_PROXY or $protocol eq HTTPS_PROXY or $protocol eq SOCKS4_PROXY or $protocol eq SOCKS5_PROXY ) {
 				$self->{error} = "Wrong protocol type [".$protocol."]";
 				return 0;
@@ -66,13 +66,13 @@ sub setProxy {
 				$self->{error} = 'Error proxy format!';
 				return 0;
 			}
-		
+
 		# Иначе возращяем отрицание
 		} else {
 			$self->{proxy} =  'Wrong proxy protocol, ip or port!';
 			return 0;
 		}
-	
+
 	} else {
 		# Иначе возвращяем отрицание
 		$self->{error} = 'Undefined proxy value!';
@@ -103,13 +103,13 @@ sub uploadFile {
 	unless ($self->{id}) {
 		$self->{id} = time();
 	}
-	  
+
 	# Проверяем был ли передан путь к файлу
 	unless (defined $filename) {
 		$self->{error} = 'File parameter was not specified or is undef!';
 		return 0;
 	}
-	
+
 	# Проверяем, файл ли это
 	unless (-f $filename) {
 		$self->{error} = 'File parameter to uploadFile() was not found!';
@@ -145,7 +145,7 @@ sub uploadFile {
 		$self->{error} = "Cannot parsed URL in the:\n".$res->as_string."\n";
 		return 0;
 	}
-	
+
 }
 
 1;
@@ -159,7 +159,7 @@ WebService::Gyazo::B - perl image upload library for gyazo.com
 =head1 SYNOPSIS
 
 	use WebService::Gyazo::B;
-	
+
 	my $newUserId = time();
 
 	my $upAgent = WebService::Gyazo::B->new(id => $newUserId);

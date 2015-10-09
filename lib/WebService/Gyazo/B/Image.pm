@@ -8,7 +8,7 @@ sub new {
 	my $self = shift;
 	my %args = @_;
 	$self = bless(\%args, $self);
-	
+
 	return $self;
 }
 
