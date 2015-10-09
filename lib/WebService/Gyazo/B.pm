@@ -10,7 +10,7 @@ use LWP::Protocol::socks;
 use HTTP::Request::Common;
 use URI::Simple;
 
-our $VERSION = 0.03;
+our $VERSION = 0.04;
 
 use constant {
 	HTTP_PROXY => 'http',
@@ -154,7 +154,7 @@ __END__
 
 =head1 NAME
 
-WebService::Gyazo::B - perl image upload library for gyazo.com
+WebService::Gyazo::B - a Perl image upload library for gyazo.com
 
 =head1 SYNOPSIS
 
@@ -176,6 +176,9 @@ WebService::Gyazo::B - perl image upload library for gyazo.com
 =head1 DESCRIPTION
 
 B<WebService::Gyazo::B> helps you to upload images to gyazo.com (via regular expressions and LWP).
+
+It is a fork of L<WebService::Gyazo> by Shlomi Fish, which was done to make
+the deployment of some code he has written for a commission easier.
 
 =head1 METHODS
 
@@ -244,6 +247,9 @@ You can find documentation for this module with the perldoc command.
 L<WebService::Gyazo::B::Image>, L<LWP::UserAgent>.
 
 =head1 AUTHOR
+
+Modified by Shlomi Fish, 2015 (L<http://www.shlomifish.org/>) while
+disclaiming all rights.
 
 SHok, <shok at cpan.org> (L<http://nig.org.ua/>)
 
