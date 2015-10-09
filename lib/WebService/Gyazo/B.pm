@@ -194,12 +194,13 @@ Parameter id is optional, if the parameter is not passed, it will take the value
 
 	my $proxy = 'http://1.2.3.4:8080';
 	if ($wsd->setProxy($proxy)) {
-		print "Proxy [".$proxy."] seted!";
+		print "The proxy [$proxy] was set!";
 	} else {
-		print "Proxy not seted! Error [".$wsd->error."]";
+		print "The proxy was not set! Error [".$wsd->error."]";
 	}
 
-Set proxy C<1.2.3.4:8080> and protocol http for C<LWP::UserAgent> object.
+Set the proxy C<1.2.3.4:8080> and the protocol http for the C<LWP::UserAgent>
+object.
 
 =head2 C<error>
 
