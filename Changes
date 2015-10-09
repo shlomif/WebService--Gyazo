@@ -1,0 +1,7 @@
+Revision history for WebService-Gyazo-B
+
+0.04    2015-10-09
+    - Forked from WebService-Gyazo-0.03.
+    - Fix the tests for the new semantics of the Gyazo webservice.
+    - Remove trailing whitespace.
+    - Convert to Dist-Zilla.
