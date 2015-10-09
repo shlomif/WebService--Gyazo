@@ -1,5 +1,6 @@
 WebService::Gyazo::B
 =================
+
 WebService::Gyazo::B - perl image upload library for gyazo.com
 
 
@@ -7,10 +8,16 @@ INSTALLATION
 
 To install this module type the following:
 
-	perl Makefile.PL
-	make
-	make test
-	make install
+	perl Build.PL
+    ./Build
+	./Build test
+	./Build install
+
+Or use a CPAN client see:
+
+* [CPAN Wrappers](http://perl-begin.org/topics/cpan/wrappers-for-distributions/)
+
+* [CPAN Info Page](http://perl-begin.org/topics/cpan/)
 
 DEPENDENCIES
 
@@ -18,6 +25,7 @@ This module requires these other modules and libraries:
 
 	LWP
 	LWP::UserAgent
+	LWP::Protocol::https
 	LWP::Protocol::socks
 	HTTP::Request::Common
 	URI::Simple
