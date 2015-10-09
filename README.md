@@ -1,6 +1,6 @@
-WebService::Gyazo
+WebService::Gyazo::B
 =================
-WebService::Gyazo - perl image upload library for gyazo.com
+WebService::Gyazo::B - perl image upload library for gyazo.com
 
  
 INSTALLATION

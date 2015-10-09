@@ -12,9 +12,9 @@ use constant {
 	HTTPS_PROXY => 'https',
 };
 
-use_ok('WebService::Gyazo');
+use_ok('WebService::Gyazo::B');
 
-my $ua = WebService::Gyazo->new();
+my $ua = WebService::Gyazo::B->new();
 can_ok($ua, 'setProxy');
 
 my @protocols_ok = (HTTP_PROXY, HTTPS_PROXY, SOCKS4_PROXY, SOCKS5_PROXY);

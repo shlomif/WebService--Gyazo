@@ -1,9 +1,9 @@
-package WebService::Gyazo;
+package WebService::Gyazo::B;
 
 use strict;
 use warnings;
 
-use WebService::Gyazo::Image;
+use WebService::Gyazo::B::Image;
 
 use LWP::UserAgent;
 use LWP::Protocol::socks;
@@ -140,7 +140,7 @@ sub uploadFile {
 	# выполняем POST-запрос и проверяем ответ
 	my $res = $self->{ua}->request($req);
 	if (my ($id) = ($res->content) =~ m#https://gyazo.com/(\w+)#is) {
-		return WebService::Gyazo::Image->new(id => $id);
+		return WebService::Gyazo::B::Image->new(id => $id);
 	} else {
 		$self->{error} = "Cannot parsed URL in the:\n".$res->as_string."\n";
 		return 0;
@@ -154,15 +154,15 @@ __END__
 
 =head1 NAME
 
-WebService::Gyazo - perl image upload library for gyazo.com
+WebService::Gyazo::B - perl image upload library for gyazo.com
 
 =head1 SYNOPSIS
 
-	use WebService::Gyazo;
+	use WebService::Gyazo::B;
 	
 	my $newUserId = time();
 
-	my $upAgent = WebService::Gyazo->new(id => $newUserId);
+	my $upAgent = WebService::Gyazo::B->new(id => $newUserId);
 	print "Set user id [".$newUserId."]\n";
 
 	my $image = $upAgent->uploadFile('1.jpg');
@@ -175,16 +175,16 @@ WebService::Gyazo - perl image upload library for gyazo.com
 
 =head1 DESCRIPTION
 
-B<WebService::Gyazo> helps you to upload images to gyazo.com (via regular expressions and LWP).
+B<WebService::Gyazo::B> helps you to upload images to gyazo.com (via regular expressions and LWP).
 
 =head1 METHODS
 
 =head2 C<new>
 
 	my $userID = time();
-	my $wsd = WebService::Gyazo->new(id => $userID);
+	my $wsd = WebService::Gyazo::B->new(id => $userID);
 
-Constructs a new C<WebService::Gyazo> object.
+Constructs a new C<WebService::Gyazo::B> object.
 Parameter id is optional, if the parameter is not passed, it will take the value of the time() function.
 
 =head2 C<setProxy>
@@ -231,17 +231,17 @@ This method set new gyazo user id.
 		print "Error:\n".$upAgent->error()."\n\n";
 	}
 
-This metod return object WebService::Gyazo::Image.
+This metod return object WebService::Gyazo::B::Image.
 
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc WebService::Gyazo
+    perldoc WebService::Gyazo::B
 
 =head1 SEE ALSO
 
-L<WebService::Gyazo::Image>, L<LWP::UserAgent>.
+L<WebService::Gyazo::B::Image>, L<LWP::UserAgent>.
 
 =head1 AUTHOR
 

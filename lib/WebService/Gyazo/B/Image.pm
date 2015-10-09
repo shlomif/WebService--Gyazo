@@ -1,4 +1,4 @@
-package WebService::Gyazo::Image;
+package WebService::Gyazo::B::Image;
 
 # Packages
 use strict;
@@ -45,27 +45,27 @@ __END__
 
 =head1 NAME
 
-WebService::Gyazo::Image - gyazo.com image object
+WebService::Gyazo::B::Image - gyazo.com image object
 
 =head1 SYNOPSIS
 
-	my $image = WebService::Gyazo::Image->new(id => '111111111111');
+	my $image = WebService::Gyazo::B::Image->new(id => '111111111111');
 	print "Gyazo url: ".$image->getSiteUrl."\n";
 	print "Absolute url: ".$image->getImageUrl."\n";
 	print "Image id: ".$image->getImageId."\n";
 
 =head1 DESCRIPTION
 
-B<WebService::Gyazo::Image> helps you if you use WebService::Gyazo.
+B<WebService::Gyazo::B::Image> helps you if you use WebService::Gyazo::B.
 
 =head1 METHODS
 
 =head2 C<new>
 
 	my $imageId = '1111111111111111';
-	my $image = WebService::Gyazo::Image->new(id => $imageId);
+	my $image = WebService::Gyazo::B::Image->new(id => $imageId);
 
-Constructs a new C<WebService::Gyazo::Image> object.
+Constructs a new C<WebService::Gyazo::B::Image> object.
 
 =head2 C<getSiteUrl>
 
@@ -86,11 +86,11 @@ This method return string like this:
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc WebService::Gyazo::Image
+    perldoc WebService::Gyazo::B::Image
 
 =head1 SEE ALSO
 
-L<WebService::Gyazo>.
+L<WebService::Gyazo::B>.
 
 =head1 AUTHOR
 

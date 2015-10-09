@@ -15,9 +15,9 @@ use constant {
 	HTTPS_PROXY => 'https',
 };
 
-use_ok('WebService::Gyazo');
+use_ok('WebService::Gyazo::B');
 
-my $ua = WebService::Gyazo->new();
+my $ua = WebService::Gyazo::B->new();
 can_ok($ua, 'setId');
 
 my @ids_ok = qw( 1234567 123qwe123qwe12 111 );

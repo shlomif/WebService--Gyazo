@@ -8,14 +8,14 @@ use Test::More qw( no_plan );
 
 use lib 'lib/';
 
-use_ok('WebService::Gyazo');
+use_ok('WebService::Gyazo::B');
 
-my $ua = WebService::Gyazo->new();
+my $ua = WebService::Gyazo::B->new();
 can_ok($ua, 'uploadFile');
 
 my $image = $ua->uploadFile('t/img.jpg');
 
-isa_ok($image, 'WebService::Gyazo::Image');
+isa_ok($image, 'WebService::Gyazo::B::Image');
 
 like($image->getImageId, qr/^\w+$/, '$image->getImageId == \w+ ['.$image->getImageId.']');
 like($image->getImageUrl, qr#^http://gyazo\.com/\w+\.png$#, '$image->getImageUrl == \w+ ['.$image->getImageUrl.']');
