@@ -26,7 +26,8 @@ sub new {
 	return $self;
 }
 
-# Получить текст ошибки
+# Get error message
+
 sub error {
 	my ($self) = @_;
 	return ($self->{error}?$self->{error}:'N/A');
@@ -37,14 +38,14 @@ sub isError {
 	return ($self->{error}?1:0);
 }
 
-# Установить прокси
+# Set proxy
 sub setProxy {
 	my ($self, $proxyStr) = @_;
 
-	# Если  был передан
+	# If passed
 	if ($proxyStr) {
 
-		#  Выбираем из него ip и port
+		#  Get ip and port from it
 		#my ($protocol, $ip, $port) = $proxyStr =~ m#(\w+)://(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d{1,5})#;
 
 		my $proxyUrl = URI::Simple->new($proxyStr);
@@ -58,7 +59,7 @@ sub setProxy {
 				return 0;
 			}
 
-			# Проверяем правильность введённых значений
+			# Check the correctness of values
 			if ( $port <= 65535 ) {
 				$self->{proxy} = $protocol.'://'.$ip.':'.$port;
 				return 1;
@@ -67,68 +68,68 @@ sub setProxy {
 				return 0;
 			}
 
-		# Иначе возращяем отрицание
+		# Or return 0
 		} else {
 			$self->{proxy} =  'Wrong proxy protocol, ip or port!';
 			return 0;
 		}
 
 	} else {
-		# Иначе возвращяем отрицание
+		# Or return 0
 		$self->{error} = 'Undefined proxy value!';
 		return 0;
 	}
 }
 
-# Назнначяем ID
+# Assign ID
 sub setId {
 	my ($self, $id) = @_;
 
-	# Проверяем длинну ID
+	# Check the length of ID
 	if ( defined($id) and $id =~ m#^\w+$# and length($id) <= 14 ) {
 		$self->{id} = $id;
 		return 1;
 	} else {
-		# Иначе возращяем отрицание
+		# Or return 0
 		$self->{error} = 'Wrong id syntax!';
 		return 0;
 	}
 }
 
-# Загружаем файл
+# Upload file
 sub uploadFile {
 	my ($self, $filename) = @_;
 
-	# Назначаем ID если он не был назначен
+	# Assign ID unless already assigned
 	unless ($self->{id}) {
 		$self->{id} = time();
 	}
 
-	# Проверяем был ли передан путь к файлу
+	# Check if file path was passed
 	unless (defined $filename) {
 		$self->{error} = 'File parameter was not specified or is undef!';
 		return 0;
 	}
 
-	# Проверяем, файл ли это
+	# Check if it is a file
 	unless (-f $filename) {
 		$self->{error} = 'File parameter to uploadFile() was not found!';
 		return 0;
 	}
 
-	# Проверяем возможность считать файл
+	# Check if file is readable
 	unless (-r $filename) {
 		$self->{error} = 'The file parameter to uploadFile() is not readable!';
 		return 0;
 	}
 
-	# создаём объект браузера
+	# Create user agent object
 	$self->{ua} = LWP::UserAgent->new('agent' => 'Gyazo/'.$VERSION) unless (defined $self->{ua});
 
-	# Назначаем прокси если он были передан
+	# Assign proxy if it was passed
 	$self->{ua}->proxy(['http'], $self->{proxy}.'/') if ($self->{proxy});
 
-	# создаём объект для POST-запроса
+	# Create object for POST-request
 	my $req = POST('https://gyazo.com/upload.cgi',
 		'Content_Type' => 'form-data',
 		'Content' => [
@@ -137,7 +138,7 @@ sub uploadFile {
 		]
 	);
 
-	# выполняем POST-запрос и проверяем ответ
+	# Send POST-request and check the response
 	my $res = $self->{ua}->request($req);
 	if (my ($id) = ($res->content) =~ m#https://gyazo.com/(\w+)#is) {
 		return WebService::Gyazo::B::Image->new(id => $id);
