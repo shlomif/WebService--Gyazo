@@ -26,59 +26,47 @@ sub new {
 	return $self;
 }
 
-# Get error message
-
+# Get/set error message
 sub error {
-	my ($self) = @_;
-	return ($self->{error}?$self->{error}:'N/A');
+	my ( $self, $error_str ) = @_;
+	if ( $error_str ) {
+		$self->{error} = $error_str;
+		return 0;
+	}
+	return $self->{error} || 'N/A';
 }
 
 sub isError {
-	my ($self) = @_;
-	return ($self->{error}?1:0);
+	return shift->{error} ? 1 : 0;
 }
 
 # Set proxy
 sub setProxy {
 	my ($self, $proxyStr) = @_;
 
-	# If passed
-	if ($proxyStr) {
+	return $self->error('Undefined proxy value!') unless $proxyStr;
 
-		#  Get ip and port from it
-		#my ($protocol, $ip, $port) = $proxyStr =~ m#(\w+)://(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d{1,5})#;
+	# If $proxyStr was passed, get protocol, ip and port from it
+	my $proxyUrl = URI::Simple->new($proxyStr);
 
-		my $proxyUrl = URI::Simple->new($proxyStr);
-		my ($protocol, $ip, $port) = ( $proxyUrl->protocol, $proxyUrl->host, ($proxyUrl->port || '80') );
-		#print "\n\$protocol=$protocol\n\$ip=$ip\n\$port=$port\n";
-
-		if ( defined($protocol) and defined($ip) and defined($port) ) {
-
-			unless ( $protocol eq HTTP_PROXY or $protocol eq HTTPS_PROXY or $protocol eq SOCKS4_PROXY or $protocol eq SOCKS5_PROXY ) {
-				$self->{error} = "Wrong protocol type [".$protocol."]";
-				return 0;
-			}
-
-			# Check the correctness of values
-			if ( $port <= 65535 ) {
-				$self->{proxy} = $protocol.'://'.$ip.':'.$port;
-				return 1;
-			} else {
-				$self->{error} = 'Error proxy format!';
-				return 0;
-			}
-
-		# Or return 0
-		} else {
-			$self->{proxy} =  'Wrong proxy protocol, ip or port!';
-			return 0;
-		}
-
-	} else {
-		# Or return 0
-		$self->{error} = 'Undefined proxy value!';
-		return 0;
+	# Check if we have protocol and host/ip from proxy string
+	unless ( $proxyUrl->protocol && $proxyUrl->host ) {
+		retrun $self->error('Wrong proxy protocol or hostname!')
 	}
+
+	# Check if protocol is correct
+	unless ( grep { $proxyUrl->protocol eq $_ } ( HTTP_PROXY, HTTPS_PROXY, SOCKS4_PROXY, SOCKS5_PROXY ) ) {
+		return $self->error('Wrong protocol type: ' . $proxyUrl->protocol)
+	}
+
+	# Check if port is correct
+	if ( $proxyUrl->port && $proxyUrl->port > 65535 ) {
+		return $self->error('Wrong proxy port!')
+	}
+
+	$self->{proxy} = sprintf("%s://%s:%s", $proxyUrl->protocol, $proxyUrl->host, $proxyUrl->port || 80);
+
+	return 1;
 }
 
 # Assign ID
@@ -86,14 +74,12 @@ sub setId {
 	my ($self, $id) = @_;
 
 	# Check the length of ID
-	if ( defined($id) and $id =~ m#^\w+$# and length($id) <= 14 ) {
-		$self->{id} = $id;
-		return 1;
-	} else {
-		# Or return 0
-		$self->{error} = 'Wrong id syntax!';
-		return 0;
-	}
+	return $self->error('Wrong id syntax!')
+		unless defined $id && $id =~ m#^\w{1,14}$#;
+
+	$self->{id} = $id;
+
+	return 1;
 }
 
 # Upload file
@@ -107,20 +93,17 @@ sub uploadFile {
 
 	# Check if file path was passed
 	unless (defined $filename) {
-		$self->{error} = 'File parameter was not specified or is undef!';
-		return 0;
+		return $self->error('File parameter was not specified or is undef!');
 	}
 
 	# Check if it is a file
 	unless (-f $filename) {
-		$self->{error} = 'File parameter to uploadFile() was not found!';
-		return 0;
+		return $self->error('File parameter to uploadFile() was not found!');
 	}
 
 	# Check if file is readable
 	unless (-r $filename) {
-		$self->{error} = 'The file parameter to uploadFile() is not readable!';
-		return 0;
+		return $self->error('The file parameter to uploadFile() is not readable!');
 	}
 
 	# Create user agent object
@@ -143,10 +126,8 @@ sub uploadFile {
 	if (my ($id) = ($res->content) =~ m#https://gyazo.com/(\w+)#is) {
 		return WebService::Gyazo::B::Image->new(id => $id);
 	} else {
-		$self->{error} = "Cannot parsed URL in the:\n".$res->as_string."\n";
-		return 0;
+		retur $self->error("Cannot parsed URL in the:\n".$res->as_string."\n");
 	}
-
 }
 
 1;
