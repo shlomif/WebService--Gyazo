@@ -5,6 +5,7 @@ use warnings;
 
 use WebService::Gyazo::B::Image;
 
+use List::Util 'none';
 use LWP::UserAgent;
 use LWP::Protocol::socks;
 use HTTP::Request::Common;
@@ -28,12 +29,16 @@ sub new {
 
 # Get/set error message
 sub error {
+	return shift->{error} || 'N/A';
+}
+
+sub _error {
 	my ( $self, $error_str ) = @_;
 	if ( $error_str ) {
 		$self->{error} = $error_str;
-		return 0;
 	}
-	return $self->{error} || 'N/A';
+
+	return $self->{error};
 }
 
 sub isError {
@@ -44,24 +49,30 @@ sub isError {
 sub setProxy {
 	my ($self, $proxyStr) = @_;
 
-	return $self->error('Undefined proxy value!') unless $proxyStr;
+	if ( !$proxyStr ) {
+		$self->_error('Undefined proxy value!');
+		return 0;
+	}
 
 	# If $proxyStr was passed, get protocol, ip and port from it
 	my $proxyUrl = URI::Simple->new($proxyStr);
 
 	# Check if we have protocol and host/ip from proxy string
-	unless ( $proxyUrl->protocol && $proxyUrl->host ) {
-		retrun $self->error('Wrong proxy protocol or hostname!')
+	if ( !$proxyUrl->protocol || !$proxyUrl->host ) {
+		$self->_error('Wrong proxy protocol or hostname!');
+		return 0;
 	}
 
 	# Check if protocol is correct
-	unless ( grep { $proxyUrl->protocol eq $_ } ( HTTP_PROXY, HTTPS_PROXY, SOCKS4_PROXY, SOCKS5_PROXY ) ) {
-		return $self->error('Wrong protocol type: ' . $proxyUrl->protocol)
+	if ( none { $proxyUrl->protocol eq $_ } ( HTTP_PROXY, HTTPS_PROXY, SOCKS4_PROXY, SOCKS5_PROXY ) ) {
+		$self->_error('Wrong protocol type: ' . $proxyUrl->protocol);
+		return 0;
 	}
 
 	# Check if port is correct
 	if ( $proxyUrl->port && $proxyUrl->port > 65535 ) {
-		return $self->error('Wrong proxy port!')
+		$self->_error('Wrong proxy port!');
+		return 0;
 	}
 
 	$self->{proxy} = sprintf("%s://%s:%s", $proxyUrl->protocol, $proxyUrl->host, $proxyUrl->port || 80);
@@ -74,8 +85,10 @@ sub setId {
 	my ($self, $id) = @_;
 
 	# Check the length of ID
-	return $self->error('Wrong id syntax!')
-		unless defined $id && $id =~ m#^\w{1,14}$#;
+	if ( ! defined $id || $id !~ m#^\w{1,14}$# ) {
+		$self->_error('Wrong id syntax!');
+		return 0;
+	}
 
 	$self->{id} = $id;
 
@@ -87,23 +100,24 @@ sub uploadFile {
 	my ($self, $filename) = @_;
 
 	# Assign ID unless already assigned
-	unless ($self->{id}) {
-		$self->{id} = time();
-	}
+	$self->{id} ||= time();
 
 	# Check if file path was passed
-	unless (defined $filename) {
-		return $self->error('File parameter was not specified or is undef!');
+	if ( ! defined $filename ) {
+		$self->_error('File parameter was not specified or is undef!');
+		return 0;
 	}
 
 	# Check if it is a file
-	unless (-f $filename) {
-		return $self->error('File parameter to uploadFile() was not found!');
+	if ( ! -f $filename ) {
+		$self->_error('File parameter to uploadFile() was not found!');
+		return 0;
 	}
 
 	# Check if file is readable
-	unless (-r $filename) {
-		return $self->error('The file parameter to uploadFile() is not readable!');
+	if ( ! -r $filename) {
+		$self->error('The file parameter to uploadFile() is not readable!');
+		return 0;
 	}
 
 	# Create user agent object
@@ -123,10 +137,11 @@ sub uploadFile {
 
 	# Send POST-request and check the response
 	my $res = $self->{ua}->request($req);
-	if (my ($id) = ($res->content) =~ m#https://gyazo.com/(\w+)#is) {
+	if ( my ($id) = ($res->content) =~ m#https://gyazo.com/(\w+)#is ) {
 		return WebService::Gyazo::B::Image->new(id => $id);
 	} else {
-		retur $self->error("Cannot parsed URL in the:\n".$res->as_string."\n");
+		$self->_error("Cannot parsed URL in the:\n".$res->as_string."\n");
+		return 0;
 	}
 }
 
