@@ -10,7 +10,7 @@ use LWP::Protocol::socks;
 use HTTP::Request::Common;
 use URI::Simple;
 
-our $VERSION = '0.0403';
+our $VERSION = '0.0404';
 
 my %PROXY_PROTOCOLS = (map { $_ => 1 } qw(http https socks socks4));
 
