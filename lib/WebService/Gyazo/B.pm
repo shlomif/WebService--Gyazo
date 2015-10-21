@@ -5,7 +5,6 @@ use warnings;
 
 use WebService::Gyazo::B::Image;
 
-use List::Util 'none';
 use LWP::UserAgent;
 use LWP::Protocol::socks;
 use HTTP::Request::Common;
@@ -13,12 +12,7 @@ use URI::Simple;
 
 our $VERSION = '0.0403';
 
-use constant {
-	HTTP_PROXY => 'http',
-	SOCKS4_PROXY => 'socks4',
-	SOCKS5_PROXY => 'socks',
-	HTTPS_PROXY => 'https',
-};
+my %PROXY_PROTOCOLS = (map { $_ => 1 } qw(http https socks socks4));
 
 sub new {
 	my ($self, %args) = @_;
@@ -64,7 +58,7 @@ sub setProxy {
 	}
 
 	# Check if protocol is correct
-	if ( none { $proxyUrl->protocol eq $_ } ( HTTP_PROXY, HTTPS_PROXY, SOCKS4_PROXY, SOCKS5_PROXY ) ) {
+	if ( ! exists($PROXY_PROTOCOLS{$proxyUrl->protocol})) {
 		$self->_error('Wrong protocol type: ' . $proxyUrl->protocol);
 		return 0;
 	}
