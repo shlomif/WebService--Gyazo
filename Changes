@@ -1,5 +1,10 @@
 Revision history for WebService-Gyazo-B
 
+0.0405  2015-11-26
+    - ->error() was called on $image instead of $ua in a test.
+        - http://www.cpantesters.org/cpan/report/112677a6-9231-11e5-8bc6-e0798fb2e322
+        - Thanks to Chris Williams “BINGOS” for the CPAN Testers report.
+
 0.0404  2015-10-21
     - Code cleanup by @netangel .
 

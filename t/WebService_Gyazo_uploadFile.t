@@ -17,7 +17,7 @@ my $image = $ua->uploadFile('t/img.jpg');
 
 if ($image eq 0)
 {
-    ok(0, "uploadFile() Returned 0 ; error=[" . $image->error() . "]");
+    ok(0, "uploadFile() Returned 0 ; error=[" . $ua->error() . "]");
     exit(-1);
 }
 
